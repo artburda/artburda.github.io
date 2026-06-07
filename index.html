@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Arthur Burda Fotografie</title>
 <link rel="icon" type="image/png" href="favicon.png">
+
 <style>
 * {
     box-sizing: border-box;
@@ -102,21 +103,22 @@ h1 {
     margin: 0 auto 36px;
 }
 
+/* Masonry-Portfolio ohne abgeschnittene Bilder */
 .gallery {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 64px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 12px;
+    column-count: 4;
+    column-gap: 14px;
 }
 
 .gallery img {
     width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
+    height: auto;
     display: block;
+    margin-bottom: 14px;
     cursor: pointer;
+    break-inside: avoid;
     transition: opacity 0.2s ease;
 }
 
@@ -187,6 +189,12 @@ footer a {
     text-decoration: none;
 }
 
+@media (max-width: 1000px) {
+    .gallery {
+        column-count: 3;
+    }
+}
+
 @media (max-width: 700px) {
 
     .cover {
@@ -209,13 +217,45 @@ footer a {
 
     .gallery {
         padding: 0 12px 40px;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        column-count: 2;
+        column-gap: 8px;
+    }
+
+    .gallery img {
+        margin-bottom: 8px;
     }
 
     .prev,
     .next {
-        display: none;
+        top: auto;
+        bottom: 22px;
+        transform: none;
+        font-size: 2rem;
+        background: rgba(255,255,255,0.75);
+    }
+
+    .prev {
+        left: 70px;
+    }
+
+    .next {
+        right: 70px;
+    }
+
+    .close {
+        top: 12px;
+        right: 16px;
+    }
+
+    .lightbox img {
+        max-height: 82vh;
+    }
+}
+
+@media (max-width: 430px) {
+    .gallery {
+        column-count: 1;
+    }
 }
 </style>
 
