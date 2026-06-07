@@ -103,22 +103,19 @@ h1 {
     margin: 0 auto 36px;
 }
 
-/* Masonry-Portfolio ohne abgeschnittene Bilder */
 .gallery {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 64px;
-    column-count: 4;
-    column-gap: 14px;
+    position: relative;
 }
 
 .gallery img {
-    width: 100%;
+    position: absolute;
+    width: calc((100% - 42px) / 4);
     height: auto;
     display: block;
-    margin-bottom: 14px;
     cursor: pointer;
-    break-inside: avoid;
     transition: opacity 0.2s ease;
 }
 
@@ -190,8 +187,8 @@ footer a {
 }
 
 @media (max-width: 1000px) {
-    .gallery {
-        column-count: 3;
+    .gallery img {
+        width: calc((100% - 24px) / 3);
     }
 }
 
@@ -217,12 +214,10 @@ footer a {
 
     .gallery {
         padding: 0 12px 40px;
-        column-count: 2;
-        column-gap: 8px;
     }
 
     .gallery img {
-        margin-bottom: 8px;
+        width: calc((100% - 8px) / 2);
     }
 
     .prev,
@@ -251,15 +246,9 @@ footer a {
         max-height: 82vh;
     }
 }
-
-@media (max-width: 430px) {
-    .gallery {
-        column-count: 1;
-    }
-}
 </style>
-
 </head>
+
 <body>
 
 <section class="cover">
@@ -280,7 +269,7 @@ footer a {
     <h2>Portfolio</h2>
 </section>
 
-<main class="gallery">
+<main class="gallery" id="gallery">
     <img src="images/01 strasse villmergen.jpg" alt="">
     <img src="images/02 Fahrverbot.jpg" alt="">
     <img src="images/03 maschinen.jpg" alt="">
@@ -321,19 +310,62 @@ footer a {
 </footer>
 
 <script>
+const gallery = document.getElementById("gallery");
 const images = document.querySelectorAll(".gallery img");
 const lightbox = document.getElementById("lightbox");
 const lightboxImg = document.getElementById("lightbox-img");
 
 let currentIndex = 0;
 
+function getColumnCount() {
+    if (window.innerWidth <= 700) return 2;
+    if (window.innerWidth <= 1000) return 3;
+    return 4;
+}
+
+function getGap() {
+    if (window.innerWidth <= 700) return 8;
+    return 14;
+}
+
+function layoutMasonry() {
+    const columnCount = getColumnCount();
+    const gap = getGap();
+    const galleryWidth = gallery.clientWidth;
+    const columnWidth = (galleryWidth - gap * (columnCount - 1)) / columnCount;
+    const columnHeights = new Array(columnCount).fill(0);
+
+    images.forEach((img) => {
+        img.style.width = columnWidth + "px";
+
+        const shortestColumn = columnHeights.indexOf(Math.min(...columnHeights));
+        const x = shortestColumn * (columnWidth + gap);
+        const y = columnHeights[shortestColumn];
+
+        img.style.left = x + "px";
+        img.style.top = y + "px";
+
+        const ratio = img.naturalHeight / img.naturalWidth;
+        const displayedHeight = columnWidth * ratio;
+
+        columnHeights[shortestColumn] += displayedHeight + gap;
+    });
+
+    gallery.style.height = Math.max(...columnHeights) + "px";
+}
+
 images.forEach((img, index) => {
+    img.addEventListener("load", layoutMasonry);
+
     img.addEventListener("click", () => {
         currentIndex = index;
         lightboxImg.src = img.src;
         lightbox.classList.add("active");
     });
 });
+
+window.addEventListener("load", layoutMasonry);
+window.addEventListener("resize", layoutMasonry);
 
 function closeLightbox() {
     lightbox.classList.remove("active");
