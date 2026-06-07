@@ -81,17 +81,72 @@ h1 {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 24px 64px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
 }
 
 .gallery img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
     display: block;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.gallery img:hover {
+    opacity: 0.9;
+}
+
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.97);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 92vw;
+    max-height: 90vh;
+    width: auto;
     height: auto;
-    max-width: 1100px;
-    max-height: 85vh;
+}
+
+.close,
+.prev,
+.next {
+    position: fixed;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #111;
+    cursor: pointer;
+    padding: 16px;
+}
+
+.close {
+    top: 20px;
+    right: 30px;
+}
+
+.prev {
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.next {
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 footer {
@@ -103,6 +158,7 @@ footer {
 }
 
 @media (max-width: 700px) {
+
     .cover {
         min-height: 88vh;
         padding: 56px 16px 40px;
@@ -122,12 +178,9 @@ footer {
     }
 
     .gallery {
-        padding: 0 16px 40px;
-        gap: 36px;
-    }
-
-    .gallery img {
-        max-height: none;
+        padding: 0 12px 40px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 }
 </style>
@@ -169,10 +222,61 @@ footer {
     <img src="images/18 Tafelberg.jpg" alt="">
 </main>
 
+<div class="lightbox" id="lightbox">
+    <button class="close" onclick="closeLightbox()">×</button>
+    <button class="prev" onclick="prevImage()">‹</button>
+    <img id="lightbox-img" src="" alt="">
+    <button class="next" onclick="nextImage()">›</button>
+</div>
+
 <footer>
     artburda@hotmail.com<br>
     © 2026 Arthur Burda
 </footer>
+
+<script>
+const images = document.querySelectorAll(".gallery img");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+
+let currentIndex = 0;
+
+images.forEach((img, index) => {
+    img.addEventListener("click", () => {
+        currentIndex = index;
+        lightboxImg.src = img.src;
+        lightbox.classList.add("active");
+    });
+});
+
+function closeLightbox() {
+    lightbox.classList.remove("active");
+}
+
+function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    lightboxImg.src = images[currentIndex].src;
+}
+
+function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    lightboxImg.src = images[currentIndex].src;
+}
+
+document.addEventListener("keydown", function(e) {
+    if (!lightbox.classList.contains("active")) return;
+
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowRight") nextImage();
+    if (e.key === "ArrowLeft") prevImage();
+});
+
+lightbox.addEventListener("click", function(e) {
+    if (e.target === lightbox) {
+        closeLightbox();
+    }
+});
+</script>
 
 </body>
 </html>
