@@ -108,13 +108,12 @@ h1 {
 .gallery {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 24px 64px;
+    padding: 0 40px 64px;
     position: relative;
 }
 
 .gallery img {
     position: absolute;
-    width: calc((100% - 42px) / 4);
     height: auto;
     display: block;
     cursor: pointer;
@@ -155,26 +154,24 @@ h1 {
     transform: translateY(-50%);
     border: none;
     background: none;
-    color: #c7c7c7;
-    font-size: 3rem;
+    color: #d8d8d8;
+    font-size: 2.5rem;
     cursor: pointer;
     z-index: 10000;
 }
 
 .prev:hover,
 .next:hover {
-    color: #666;
+    color: #777;
 }
 
 .prev {
-    left: 0px;
+    left: 0;
 }
 
 .next {
-    right: 0px;
+    right: 0;
 }
-
-
 
 .close {
     position: fixed;
@@ -201,12 +198,6 @@ footer a {
     text-decoration: none;
 }
 
-@media (max-width: 1000px) {
-    .gallery img {
-        width: calc((100% - 24px) / 3);
-    }
-}
-
 @media (max-width: 700px) {
 
     .cover {
@@ -228,11 +219,7 @@ footer a {
     }
 
     .gallery {
-        padding: 0 12px 40px;
-    }
-
-    .gallery img {
-        width: calc((100% - 8px) / 2);
+        padding: 0 20px 40px;
     }
 
     .lightbox {
@@ -267,7 +254,6 @@ footer a {
         right: 14px;
     }
 }
-
 </style>
 </head>
 
@@ -322,7 +308,6 @@ footer a {
     <button class="next" onclick="nextImage()">›</button>
 </div>
 
-
 <footer id="kontakt">
     <strong>Kontakt</strong><br><br>
 
@@ -357,7 +342,12 @@ function getGap() {
 function layoutMasonry() {
     const columnCount = getColumnCount();
     const gap = getGap();
-    const galleryWidth = gallery.clientWidth;
+
+    const styles = window.getComputedStyle(gallery);
+    const paddingLeft = parseFloat(styles.paddingLeft);
+    const paddingRight = parseFloat(styles.paddingRight);
+
+    const galleryWidth = gallery.clientWidth - paddingLeft - paddingRight;
     const columnWidth = (galleryWidth - gap * (columnCount - 1)) / columnCount;
     const columnHeights = new Array(columnCount).fill(0);
 
@@ -365,7 +355,7 @@ function layoutMasonry() {
         img.style.width = columnWidth + "px";
 
         const shortestColumn = columnHeights.indexOf(Math.min(...columnHeights));
-        const x = shortestColumn * (columnWidth + gap);
+        const x = paddingLeft + shortestColumn * (columnWidth + gap);
         const y = columnHeights[shortestColumn];
 
         img.style.left = x + "px";
