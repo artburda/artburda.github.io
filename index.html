@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -131,8 +132,10 @@ h1 {
     inset: 0;
     background: rgba(255,255,255,0.97);
     z-index: 9999;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 32px 20px;
 }
 
 .lightbox.active {
@@ -141,38 +144,41 @@ h1 {
 
 .lightbox img {
     max-width: 92vw;
-    max-height: 90vh;
+    max-height: 82vh;
     width: auto;
     height: auto;
 }
 
-.close,
-.prev,
-.next {
+.lightbox-nav {
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+    gap: 42px;
+}
+
+.lightbox-nav button {
+    background: none;
+    border: none;
+    color: #111;
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 8px 12px;
+}
+
+.lightbox-nav button:hover {
+    text-decoration: underline;
+}
+
+.close {
     position: fixed;
+    top: 20px;
+    right: 30px;
     background: none;
     border: none;
     font-size: 2rem;
     color: #111;
     cursor: pointer;
     padding: 16px;
-}
-
-.close {
-    top: 20px;
-    right: 30px;
-}
-
-.prev {
-    left: 30px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.next {
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
 }
 
 footer {
@@ -222,30 +228,23 @@ footer a {
         width: calc((100% - 8px) / 2);
     }
 
-    .prev,
-    .next {
-        top: auto;
-        bottom: 22px;
-        transform: none;
-        font-size: 2rem;
-        background: rgba(255,255,255,0.75);
-    }
-
-    .prev {
-        left: 70px;
-    }
-
-    .next {
-        right: 70px;
-    }
-
-    .close {
-        top: 12px;
-        right: 16px;
+    .lightbox {
+        padding: 24px 14px;
     }
 
     .lightbox img {
-        max-height: 82vh;
+        max-width: 94vw;
+        max-height: 78vh;
+    }
+
+    .lightbox-nav {
+        margin-top: 16px;
+        gap: 28px;
+    }
+
+    .close {
+        top: 10px;
+        right: 14px;
     }
 }
 </style>
@@ -294,9 +293,13 @@ footer a {
 
 <div class="lightbox" id="lightbox">
     <button class="close" onclick="closeLightbox()">×</button>
-    <button class="prev" onclick="prevImage()">‹</button>
+
     <img id="lightbox-img" src="" alt="">
-    <button class="next" onclick="nextImage()">›</button>
+
+    <div class="lightbox-nav">
+        <button onclick="prevImage()">← Vorheriges</button>
+        <button onclick="nextImage()">Nächstes →</button>
+    </div>
 </div>
 
 <footer id="kontakt">
