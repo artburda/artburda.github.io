@@ -8,10 +8,6 @@
 <link rel="shortcut icon" href="/favicon.png?v=3" type="image/png">
 <link rel="apple-touch-icon" href="/favicon.png?v=3">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
 * {
     box-sizing: border-box;
@@ -25,8 +21,7 @@ body {
     margin: 0;
     background: #ffffff;
     color: #111111;
-    font-family: "Inter", sans-serif;
-    font-weight: 300;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
 }
 
 .cover {
@@ -41,37 +36,32 @@ body {
 
 h1 {
     margin: 0;
-    font-family: "Cormorant Garamond", serif;
-    font-size: 4rem;
+    font-size: 2.8rem;
     font-weight: 300;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.01em;
 }
 
 .subtitle {
     color: #666666;
-    margin-top: 10px;
-    font-size: 0.9rem;
+    margin-top: 12px;
+    font-size: 1rem;
     font-weight: 300;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
 }
 
 .nav-buttons {
-    margin-top: 34px;
+    margin-top: 32px;
     display: flex;
     justify-content: center;
-    gap: 14px;
+    gap: 12px;
 }
 
 .nav-buttons a {
     text-decoration: none;
     color: #111;
     border: 1px solid #dddddd;
-    padding: 10px 20px;
-    font-size: 0.78rem;
+    padding: 10px 18px;
+    font-size: 0.82rem;
     font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
     transition: all 0.2s ease;
 }
 
@@ -81,7 +71,7 @@ h1 {
 }
 
 .intro-image {
-    margin-top: 58px;
+    margin-top: 56px;
     width: 100%;
     max-width: 560px;
 }
@@ -95,16 +85,15 @@ h1 {
 .portfolio-title {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 76px 24px 50px;
+    padding: 70px 24px 48px;
     text-align: center;
 }
 
 .portfolio-title h2 {
     margin: 0;
-    font-family: "Inter", sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 400;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: #555555;
 }
@@ -115,7 +104,7 @@ h1 {
     width: 48px;
     height: 1px;
     background: #cccccc;
-    margin: 0 auto 36px;
+    margin: 0 auto 34px;
 }
 
 .gallery {
@@ -200,20 +189,15 @@ h1 {
 
 footer {
     text-align: center;
-    padding: 64px 24px;
+    padding: 56px 24px;
     color: #666666;
-    font-size: 0.82rem;
-    font-weight: 300;
-    line-height: 1.9;
-    letter-spacing: 0.04em;
+    font-size: 0.88rem;
+    line-height: 1.8;
 }
 
 footer strong {
     color: #111111;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-size: 0.76rem;
+    font-weight: 500;
 }
 
 footer a {
@@ -229,13 +213,11 @@ footer a {
     }
 
     h1 {
-        font-size: 3rem;
-        letter-spacing: 0.03em;
+        font-size: 2.2rem;
     }
 
     .subtitle {
-        font-size: 0.78rem;
-        letter-spacing: 0.14em;
+        font-size: 0.95rem;
     }
 
     .nav-buttons {
@@ -245,7 +227,7 @@ footer a {
 
     .nav-buttons a {
         padding: 9px 15px;
-        font-size: 0.72rem;
+        font-size: 0.78rem;
     }
 
     .intro-image {
@@ -254,7 +236,7 @@ footer a {
     }
 
     .portfolio-title {
-        padding: 56px 16px 38px;
+        padding: 52px 16px 36px;
     }
 
     .gallery {
@@ -339,23 +321,15 @@ footer a {
 
 <div class="lightbox" id="lightbox">
     <button class="close" onclick="closeLightbox()">×</button>
-
     <button class="prev" onclick="prevImage()">‹</button>
-
     <img id="lightbox-img" src="" alt="">
-
     <button class="next" onclick="nextImage()">›</button>
 </div>
 
 <footer id="kontakt">
     <strong>Kontakt</strong><br><br>
-
-    <a href="mailto:artburda@hotmail.com">
-        artburda@hotmail.com
-    </a>
-
+    <a href="mailto:artburda@hotmail.com">artburda@hotmail.com</a>
     <br><br>
-
     © 2026 Arthur Burda
 </footer>
 
