@@ -73,54 +73,54 @@ footer{text-align:center;padding:32px 20px 50px;color:#777;font-size:.76rem}foot
 // Hoch- und Querformate verwenden standardmäßig dieselbe Bildfläche.
 // Dateinamen unten stammen aus v3 und sind weiterhin VORLÄUFIG.
 const pages = [
-  "../scotland/Scotland_01.jpg", // 01
-  "../scotland/ampel_toeggel.jpg", // 02
-  "../scotland/frauen.jpg", // 03
-  "../scotland/Toeggel.jpg", // 04
-  "../scotland/auto.jpg", // 05
-  "../scotland/Scotland_22.jpg", // 06
-  "../scotland/Scotland_27.jpg", // 07
-  "../scotland/Scotland_35.jpg", // 08
-  "../scotland/haltestelle.jpg", // 09
-  "../scotland/Scotland_40.jpg", // 10
-  "../scotland/Scotland_41.jpg", // 11
-  "../scotland/Scotland_43.jpg", // 12
+  "../scotland/Scotland_37.jpg", // 01
+  "../scotland/Scotland_03.jpg", // 02
+  "../scotland/Scotland_01.jpg", // 03
+  "../scotland/Scotland_06.jpg", // 04
+  "../scotland/Scotland_10.jpg", // 05
+  "../scotland/Scotland_09.jpg", // 06
+  "../scotland/Scotland_12.jpg", // 07
+  "../scotland/Scotland_14.jpg", // 08
+  "../scotland/Varianten Frauen 3.jpg", // 09
+  "../scotland/Scotland_21.jpg", // 10
+  "../scotland/Scotland_17.jpg", // 11
+  "../scotland/Scotland_19.jpg", // 12
   null, // 13
   null, // 14
-  "../scotland/Scotland_45.jpg", // 15
-  "../scotland/Scotland_47.jpg", // 16
-  "../scotland/Scotland_49.jpg", // 17
-  "../scotland/Scotland_53.jpg", // 18
-  "../scotland/Scotland_54.jpg", // 19
-  "../scotland/Scotland_55.jpg", // 20
-  "../scotland/Scotland_38.jpg", // 21
-  "../scotland/Scotland_39.jpg", // 22
+  "../scotland/Scotland_22.jpg", // 15
+  "../scotland/Scotland_24.jpg", // 16
+  "../scotland/Scotland_27.jpg", // 17
+  "../scotland/Scotland_29.jpg", // 18
+  "../scotland/Scotland_31.jpg", // 19
+  "../scotland/Scotland_34.jpg", // 20
+  "../scotland/Scotland_35.jpg", // 21
+  "../scotland/Scotland_36.jpg", // 22
   null, // 23
   null, // 24
-  "../scotland/Scotland_59.jpg", // 25
-  "../scotland/Scotland_60.jpg", // 26
-  "../scotland/Scotland_62.jpg", // 27
-  "../scotland/Scotland_63.jpg", // 28 – wird durch spreadImages[28] ersetzt
-  "../scotland/Scotland_65.jpg", // 29 – wird durch spreadImages[28] ersetzt
+  "../scotland/Scotland_40.jpg", // 25
+  "../scotland/Scotland_55.jpg", // 26
+  "../scotland/Scotland_53.jpg", // 27
+  "../scotland/Scotland_41.jpg", // 28 – wird durch spreadImages[28] ersetzt
+  "../scotland/Scotland_41.jpg", // 29 – wird durch spreadImages[28] ersetzt
   null, // 30
-  "../scotland/Bruecke.jpg", // 31
+  "../scotland/Scotland_54.jpg", // 31
   null, // 32
-  null, // 33
-  null, // 34
-  null, // 35
-  null, // 36
+  "../scotland/Scotland_49.jpg", // 33
+  "../scotland/Scotland_45.jpg", // 34
+  "../scotland/Scotland_47.jpg", // 35
+  "../scotland/Scotland_43.jpg", // 36
   null, // 37
   null, // 38
-  null, // 39
+  "../scotland/Scotland_38.jpg", // 39
   null, // 40
-  null, // 41
+  "../scotland/Scotland_39.jpg", // 41
   null, // 42
-  null, // 43
-  null, // 44
-  null, // 45
-  null, // 46
-  null, // 47
-  null  // 48
+  "../scotland/Scotland_63.jpg", // 43
+  "../scotland/Scotland_59.jpg", // 44
+  "../scotland/Scotland_62.jpg", // 45
+  "../scotland/Scotland_60.jpg", // 46
+  "../scotland/Scotland_65.jpg", // 47
+  "../scotland/Scotland_64.jpg",  // 48
 ];
 
 // DOPPELSEITENFOTOS: Ein Foto über zwei aufeinanderfolgende Seiten.
@@ -137,7 +137,7 @@ const spreadImages = {
   }
 };
 
-const coverPhoto = "../scotland/Scotland_01.jpg";
+const coverPhoto = "../scotland/Scotland_38.jpg";
 function spreadForPage(n){
  for(const [start, config] of Object.entries(spreadImages)){
   const first=Number(start);
