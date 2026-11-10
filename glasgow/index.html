@@ -10,17 +10,17 @@
 header{text-align:center;padding:45px 18px 20px}h1{font-size:clamp(1.65rem,4vw,2.7rem);font-weight:300;letter-spacing:.01em;margin:0}header p{color:#666;font-weight:300;margin:8px 0 18px;font-size:.95rem}
 .back{display:inline-block;border:1px solid #e5e5e5;border-radius:100px;padding:9px 19px;color:#111;text-decoration:none;font-size:.8rem}.back:hover{background:#111;color:white}
 .stage{min-height:min(75vw,760px);display:flex;justify-content:center;align-items:center;padding:20px 18px 8px;overflow:hidden;perspective:2200px}
-.book{width:min(92vw,1160px,calc((100dvh - 245px)*2));aspect-ratio:2/1;position:relative;transform-style:preserve-3d;filter:drop-shadow(0 7px 9px rgba(0,0,0,.12))}
+.book{width:min(92vw,1160px,calc((100dvh - 245px)*2));aspect-ratio:2/1;position:relative;transform-style:preserve-3d;transform:translateX(0);transition:transform var(--duration) cubic-bezier(.45,.05,.55,.95);filter:drop-shadow(0 5px 7px rgba(0,0,0,.09))}
 .page{position:absolute;top:0;width:50%;height:100%;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.page.left{left:0;box-shadow:inset -5px 0 10px -12px #000}.page.right{right:0;box-shadow:inset 5px 0 10px -12px #000}
+.page.left{left:0}.page.right{right:0}
 .page img{display:block;max-width:94%;max-height:85%;width:auto;height:auto;object-fit:contain}
 .page .image-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
 .page .image-frame img{max-width:90%;max-height:82%}
-.page.empty{background:#fff}.page.inside-cover{background:#0a0a0a}.page.cover-front{background:#050505;color:#fff}
+.page.empty{background:#fff}.page.inside-cover{background:#fff}.page.cover-front{background:#050505;color:#fff}
 .page.cover-front img{max-width:76%;max-height:56%;margin-bottom:8%}
 .cover-content{display:flex;align-items:center;justify-content:center;flex-direction:column;width:100%;height:100%}.cover-title{font-size:clamp(7px,1.1vw,14px);font-weight:500;position:absolute;top:74%;letter-spacing:.01em}
-.book.closed .page.left{background:transparent;box-shadow:none}.book.closed .page.right{box-shadow:0 2px 12px #0002}
-.gutter{position:absolute;left:50%;top:0;height:100%;width:2px;transform:translateX(-50%);background:linear-gradient(90deg,#00000015,#ffffff55,#00000012);pointer-events:none;z-index:5}.book.closed .gutter{display:none}
+.book.closed{transform:translateX(-25%);filter:none}.book.closed .page.left{background:transparent;box-shadow:none}.book.closed .page.right{box-shadow:0 3px 12px #0002}
+.gutter{position:absolute;left:50%;top:0;height:100%;width:1px;transform:translateX(-50%);background:rgba(0,0,0,.035);pointer-events:none;z-index:5}.book.closed .gutter{display:none}
 .turn{position:absolute;top:0;left:50%;width:50%;height:100%;transform-origin:left center;transform-style:preserve-3d;z-index:8;pointer-events:none;display:none}
 .turn.reverse{left:0;transform-origin:right center}
 .turn-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;background:white;display:flex;align-items:center;justify-content:center}
@@ -131,6 +131,8 @@ function show(){const spread=spreads[index];renderPage(left,spread.left,'left');
 function go(dir){if(busy||index+dir<0||index+dir>=spreads.length)return;
  busy=true;const from=spreads[index],to=spreads[index+dir];
  // Die sich drehende Seite zeigt vorn die aktuelle und hinten die folgende Seite.
+ // Beim Öffnen/Schließen gleitet das Buch sanft zwischen Cover-Mitte und Doppelseiten-Mitte.
+ book.classList.toggle('closed', index+dir===0);
  turn.className='turn'+(dir<0?' reverse':'');
  if(dir>0){makeFace(front,from.right,'right');makeFace(back,to.left,'left');renderPage(right,to.right,'right')}
  else{makeFace(front,from.left,'left');makeFace(back,to.right,'right');renderPage(left,to.left,'left')}
