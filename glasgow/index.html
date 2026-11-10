@@ -15,7 +15,16 @@ header{text-align:center;padding:45px 18px 20px}h1{font-size:clamp(1.65rem,4vw,2
 .page.left{left:0}.page.right{right:0}
 .page img{display:block;max-width:94%;max-height:85%;width:auto;height:auto;object-fit:contain}
 .page .image-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+/* Einzelbilder: identische Bildfläche für Hoch- und Querformat; kein Beschnitt. */
 .page .image-frame img{max-width:90%;max-height:82%}
+.page .image-frame{position:relative}
+/* Ein Spread ist ein einziges Bild auf einer virtuellen Doppelseite.
+   Jede Buchseite zeigt exakt ihre Hälfte; auch während des Umblätterns. */
+.spread-window{position:absolute;inset:0;overflow:hidden}
+.spread-canvas{position:absolute;top:0;width:200%;height:100%;overflow:hidden}
+.spread-window.left-half .spread-canvas{left:0}
+.spread-window.right-half .spread-canvas{left:-100%}
+.spread-canvas img{position:absolute;display:block;height:100%;max-width:none;max-height:none;object-fit:contain}
 .page.empty{background:#fff}.page.inside-cover{background:#fff}.page.cover-front{background:#050505;color:#fff}
 .page.cover-front img{max-width:76%;max-height:56%;margin-bottom:8%}
 .cover-content{display:flex;align-items:center;justify-content:center;flex-direction:column;width:100%;height:100%}.cover-title{font-size:clamp(7px,1.1vw,14px);font-weight:500;position:absolute;top:74%;letter-spacing:.01em}
@@ -32,6 +41,7 @@ header{text-align:center;padding:45px 18px 20px}h1{font-size:clamp(1.65rem,4vw,2
 @keyframes flipBack{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
 .controls{display:flex;justify-content:center;align-items:center;gap:30px;padding:10px 12px 28px}
 .controls button{background:none;border:1px solid #dedede;border-radius:50%;width:43px;height:43px;font-size:26px;font-weight:300;cursor:pointer;color:#222;line-height:1}.controls button:disabled{opacity:.2;cursor:default}
+.controls #toCover{width:auto;height:36px;padding:0 15px;border-radius:100px;font-size:.78rem;line-height:1;white-space:nowrap}
 #status{font-size:.8rem;color:#777;min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
 footer{text-align:center;padding:32px 20px 50px;color:#777;font-size:.76rem}footer p{margin:0 0 20px}.rights{display:block;font-size:.67rem;max-width:670px;margin:16px auto 0;line-height:1.6;color:#999}
 @media(max-width:650px){header{padding-top:28px}.stage{padding:8px 6px;min-height:55vw}.book{width:98vw}.controls{padding-top:15px}.page .image-frame img{max-width:92%;max-height:88%}.cover-title{font-size:7px}}
@@ -46,70 +56,103 @@ footer{text-align:center;padding:32px 20px 50px;color:#777;font-size:.76rem}foot
   <div class="gutter"></div>
   <div class="turn" id="turn"><div class="turn-face" id="turnFront"></div><div class="turn-face backface" id="turnBack"></div></div>
  </div></div>
- <div class="controls"><button id="prev" aria-label="Zurückblättern">‹</button><span id="status" aria-live="polite"></span><button id="next" aria-label="Weiterblättern">›</button></div>
+ <div class="controls"><button id="prev" aria-label="Zurückblättern">‹</button><span id="status" aria-live="polite"></span><button id="next" aria-label="Weiterblättern">›</button><button id="toCover" aria-label="Direkt zum Cover">Cover</button></div>
 </main>
 <footer><p>Prints ausgewählter Arbeiten auf Anfrage.</p><div>© 2026 Arthur Burda · Alle Rechte vorbehalten.</div><span class="rights">Die Verwendung der Fotografien und Inhalte dieser Website für AI-Training, Machine Learning, automatisierte Datensammlung oder vergleichbare Zwecke ist ohne ausdrückliche Zustimmung nicht gestattet.</span></footer>
 <script>
-// BUCHSEITEN 1–48: null = leere Seite. Die Bildzuordnung ist VORLÄUFIG.
-// Ersetze die Dateinamen anhand der tatsächlichen ifolor-Seitenfolge.
+// =============================================================
+// HIER DAS BUCH BEARBEITEN – Seiten 1 bis 48
+// =============================================================
+// Jede Zeile gehört genau zur angegebenen Buchseite.
+//   "../scotland/Datei.jpg" = Bild auf dieser Seite
+//   null                    = bewusst leere Seite
+// Optional kann eine Seite ein Objekt mit individueller Position sein:
+//   {src:"../scotland/Datei.jpg", width:90, height:82, x:50, y:50}
+// width/height: Größe der Bildfläche in % der quadratischen Buchseite.
+// x/y: Position des Bildmittelpunkts in % (50 = mittig).
+// Hoch- und Querformate verwenden standardmäßig dieselbe Bildfläche.
+// Dateinamen unten stammen aus v3 und sind weiterhin VORLÄUFIG.
 const pages = [
-  "../scotland/Scotland_01.jpg",
-  "../scotland/ampel_toeggel.jpg",
-  "../scotland/frauen.jpg",
-  "../scotland/Toeggel.jpg",
-  "../scotland/auto.jpg",
-  "../scotland/Scotland_22.jpg",
-  "../scotland/Scotland_27.jpg",
-  "../scotland/Scotland_35.jpg",
-  "../scotland/haltestelle.jpg",
-  "../scotland/Scotland_40.jpg",
-  "../scotland/Scotland_41.jpg",
-  "../scotland/Scotland_43.jpg",
-  null,
-  null,
-  "../scotland/Scotland_45.jpg",
-  "../scotland/Scotland_47.jpg",
-  "../scotland/Scotland_49.jpg",
-  "../scotland/Scotland_53.jpg",
-  "../scotland/Scotland_54.jpg",
-  "../scotland/Scotland_55.jpg",
-  "../scotland/Scotland_38.jpg",
-  "../scotland/Scotland_39.jpg",
-  null,
-  null,
-  "../scotland/Scotland_59.jpg",
-  "../scotland/Scotland_60.jpg",
-  "../scotland/Scotland_62.jpg",
-  "../scotland/Scotland_63.jpg",
-  "../scotland/Scotland_65.jpg",
-  null,
-  "../scotland/Bruecke.jpg",
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null
+  "../scotland/Scotland_01.jpg", // 01
+  "../scotland/ampel_toeggel.jpg", // 02
+  "../scotland/frauen.jpg", // 03
+  "../scotland/Toeggel.jpg", // 04
+  "../scotland/auto.jpg", // 05
+  "../scotland/Scotland_22.jpg", // 06
+  "../scotland/Scotland_27.jpg", // 07
+  "../scotland/Scotland_35.jpg", // 08
+  "../scotland/haltestelle.jpg", // 09
+  "../scotland/Scotland_40.jpg", // 10
+  "../scotland/Scotland_41.jpg", // 11
+  "../scotland/Scotland_43.jpg", // 12
+  null, // 13
+  null, // 14
+  "../scotland/Scotland_45.jpg", // 15
+  "../scotland/Scotland_47.jpg", // 16
+  "../scotland/Scotland_49.jpg", // 17
+  "../scotland/Scotland_53.jpg", // 18
+  "../scotland/Scotland_54.jpg", // 19
+  "../scotland/Scotland_55.jpg", // 20
+  "../scotland/Scotland_38.jpg", // 21
+  "../scotland/Scotland_39.jpg", // 22
+  null, // 23
+  null, // 24
+  "../scotland/Scotland_59.jpg", // 25
+  "../scotland/Scotland_60.jpg", // 26
+  "../scotland/Scotland_62.jpg", // 27
+  "../scotland/Scotland_63.jpg", // 28 – wird durch spreadImages[28] ersetzt
+  "../scotland/Scotland_65.jpg", // 29 – wird durch spreadImages[28] ersetzt
+  null, // 30
+  "../scotland/Bruecke.jpg", // 31
+  null, // 32
+  null, // 33
+  null, // 34
+  null, // 35
+  null, // 36
+  null, // 37
+  null, // 38
+  null, // 39
+  null, // 40
+  null, // 41
+  null, // 42
+  null, // 43
+  null, // 44
+  null, // 45
+  null, // 46
+  null, // 47
+  null  // 48
 ];
+
+// DOPPELSEITENFOTOS: Ein Foto über zwei aufeinanderfolgende Seiten.
+// Für das ifolor-Buch ist es der Spread 28–29.
+// Trage bei src den richtigen Dateinamen ein. Bis dahin bleiben
+// die beiden bisherigen Einzelbilder sichtbar (keine falsche Zuordnung).
+const spreadImages = {
+  28: {
+    src: null, // Beispiel: "../scotland/Mein_See_Foto.jpg"
+    x: 25,     // linker Bildrand in % der gesamten Doppelseite
+    width: 75, // Bildbreite in % der gesamten Doppelseite
+    y: 50,     // vertikale Bildmitte in %
+    height: 82 // Höhe der Bildfläche in % der Buchhöhe
+  }
+};
+
 const coverPhoto = "../scotland/Scotland_01.jpg";
+function spreadForPage(n){
+ for(const [start, config] of Object.entries(spreadImages)){
+  const first=Number(start);
+  if(config.src && (n===first || n===first+1))
+   return {config, first, half:n===first?'left':'right'};
+ }
+ return null;
+}
 // Jede Position ist eine Buchansicht: Cover, Innencover + S.1, S.2+3, ... S.48 + Innencover.
 const spreads = [{left:{type:'none'},right:{type:'cover'}}];
 spreads.push({left:{type:'inside'},right:{type:'page',number:1}});
 for(let n=2;n<=48;n+=2)spreads.push({left:{type:'page',number:n},right:{type:'page',number:n+1<=48?n+1:null}});
 const book=document.getElementById('book'), left=document.getElementById('left'),right=document.getElementById('right');
 const turn=document.getElementById('turn'),front=document.getElementById('turnFront'),back=document.getElementById('turnBack');
-const prev=document.getElementById('prev'),next=document.getElementById('next'),status=document.getElementById('status');
+const prev=document.getElementById('prev'),next=document.getElementById('next'),status=document.getElementById('status'),toCover=document.getElementById('toCover');
 let index=0,busy=false,touchX=null;
 function renderPage(target,spec,side){
  target.className='page '+side;
@@ -123,11 +166,38 @@ function renderPage(target,spec,side){
  }
  target.classList.add('empty');
  if(spec.number==null)return;
- const src=pages[spec.number-1];if(!src)return;
- const frame=document.createElement('div');frame.className='image-frame';const img=document.createElement('img');img.src=src;img.alt='Fotografie auf Seite '+spec.number;img.loading='eager';img.decoding='async';frame.append(img);target.append(frame);
+ const spread=spreadForPage(spec.number);
+ if(spread){
+   const {config,half}=spread;
+   const windowEl=document.createElement('div');
+   windowEl.className='spread-window '+half+'-half';
+   const canvas=document.createElement('div');canvas.className='spread-canvas';
+   const img=document.createElement('img');img.src=config.src;
+   img.alt='Doppelseitenfotografie, Seiten '+spread.first+'–'+(spread.first+1);
+   img.loading='eager';img.decoding='async';
+   img.style.width=(config.width??100)+'%';
+   img.style.left=(config.x??0)+'%';
+   img.style.top=(config.y??50)+'%';
+   img.style.height=(config.height??100)+'%';
+   img.style.transform='translateY(-50%)';
+   canvas.append(img);windowEl.append(canvas);target.append(windowEl);
+   return;
+ }
+ const entry=pages[spec.number-1];if(!entry)return;
+ const data=typeof entry==='string'?{src:entry}:entry;
+ if(!data.src)return;
+ const frame=document.createElement('div');frame.className='image-frame';
+ const img=document.createElement('img');img.src=data.src;
+ img.alt='Fotografie auf Seite '+spec.number;img.loading='eager';img.decoding='async';
+ img.style.position='absolute';
+ img.style.width=(data.width??90)+'%';img.style.height=(data.height??82)+'%';
+ img.style.maxWidth='none';img.style.maxHeight='none';img.style.objectFit='contain';
+ img.style.left=(data.x??50)+'%';img.style.top=(data.y??50)+'%';
+ img.style.transform='translate(-50%,-50%)';
+ frame.append(img);target.append(frame);
 }
 function makeFace(el,spec,side){const holder=document.createElement('div');renderPage(holder,spec,side);holder.style.cssText='position:absolute;inset:0;width:100%;height:100%';el.replaceChildren(holder)}
-function show(){const spread=spreads[index];renderPage(left,spread.left,'left');renderPage(right,spread.right,'right');book.classList.toggle('closed',index===0);prev.disabled=busy||index===0;next.disabled=busy||index===spreads.length-1;status.textContent=index===0?'Cover':index===1?'Seite 1':index===spreads.length-1?'Seite 48':'Seiten '+spread.left.number+'–'+spread.right.number}
+function show(){const spread=spreads[index];renderPage(left,spread.left,'left');renderPage(right,spread.right,'right');book.classList.toggle('closed',index===0);prev.disabled=busy||index===0;next.disabled=busy||index===spreads.length-1;toCover.disabled=busy||index===0;status.textContent=index===0?'Cover':index===1?'Seite 1':index===spreads.length-1?'Seite 48':'Seiten '+spread.left.number+'–'+spread.right.number}
 function go(dir){if(busy||index+dir<0||index+dir>=spreads.length)return;
  busy=true;const from=spreads[index],to=spreads[index+dir];
  // Die sich drehende Seite zeigt vorn die aktuelle und hinten die folgende Seite.
@@ -142,6 +212,7 @@ function go(dir){if(busy||index+dir<0||index+dir>=spreads.length)return;
  turn.addEventListener('animationend',finish,{once:true});
 }
 prev.addEventListener('click',()=>go(-1));next.addEventListener('click',()=>go(1));
+toCover.addEventListener('click',()=>{if(busy||index===0)return;index=0;show()});
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(1)}if(e.key==='ArrowLeft'){e.preventDefault();go(-1)}});
 const stage=document.getElementById('stage');stage.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});stage.addEventListener('touchend',e=>{if(touchX===null)return;const d=e.changedTouches[0].clientX-touchX;touchX=null;if(Math.abs(d)>45)go(d<0?1:-1)},{passive:true});
 show();
