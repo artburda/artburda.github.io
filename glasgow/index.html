@@ -39,9 +39,10 @@ header{text-align:center;padding:45px 18px 20px}h1{font-size:clamp(1.65rem,4vw,2
 .turn.reverse.play{animation:flipBack var(--duration) cubic-bezier(.45,.05,.55,.95) forwards}
 @keyframes flipForward{from{transform:rotateY(0)}to{transform:rotateY(-180deg)}}
 @keyframes flipBack{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
-.controls{display:flex;justify-content:center;align-items:center;gap:30px;padding:8px 12px 28px}
+.controls{position:relative;display:grid;grid-template-columns:43px 110px 43px;align-items:center;justify-items:center;column-gap:30px;width:max-content;max-width:100%;margin:0 auto;padding:8px 0 28px}
 .controls button{background:none;border:1px solid #dedede;border-radius:50%;width:43px;height:43px;font-size:26px;font-weight:300;cursor:pointer;color:#222;line-height:1}.controls button:disabled{opacity:.2;cursor:default}
-.controls #toCover{width:auto;height:36px;padding:0 15px;border-radius:100px;font-size:.78rem;line-height:1;white-space:nowrap}
+.controls #toCover{position:absolute;left:calc(100% + 30px);top:12px;width:auto;height:36px;padding:0 15px;border-radius:100px;font-size:.78rem;line-height:1;white-space:nowrap}
+.controls #toCover:disabled{opacity:.2}
 #status{font-size:.8rem;color:#777;min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
 footer{text-align:center;margin-top:clamp(160px,24vh,300px);padding:32px 20px 50px;color:#777;font-size:.76rem}footer p{margin:0 0 20px}.rights{display:block;font-size:.67rem;max-width:670px;margin:16px auto 0;line-height:1.6;color:#999}
 @media(max-width:650px){header{padding-top:28px}.stage{padding:8px 6px 0}.book{width:98vw}.controls{padding-top:15px}.page .image-frame img{max-width:92%;max-height:88%}.cover-title{font-size:7px}}
@@ -268,12 +269,12 @@ function renderPage(target,spec,side){
  img.addEventListener('click',()=>openLightbox(data.src,img.alt));
 }
 function makeFace(el,spec,side){const holder=document.createElement('div');renderPage(holder,spec,side);holder.style.cssText='position:absolute;inset:0;width:100%;height:100%';el.replaceChildren(holder)}
-function show(){const spread=spreads[index];renderPage(left,spread.left,'left');renderPage(right,spread.right,'right');book.classList.toggle('closed',index===0);prev.disabled=busy||index===0;next.disabled=busy||index===spreads.length-1;toCover.disabled=busy||index===0;status.textContent=index===0?'Cover':index===1?'Seite 1':index===spreads.length-1?'Seite 48':'Seiten '+spread.left.number+'–'+spread.right.number;prefetchNeighbors()}
+function show(){const spread=spreads[index];renderPage(left,spread.left,'left');renderPage(right,spread.right,'right');book.classList.toggle('closed',index===0);prev.disabled=busy||index===0;next.disabled=busy||index===spreads.length-1;toCover.disabled=index===0;status.textContent=index===0?'Cover':index===1?'Seite 1':index===spreads.length-1?'Seite 48':'Seiten '+spread.left.number+'–'+spread.right.number;prefetchNeighbors()}
 async function go(dir){
   if(lightbox.classList.contains('active'))return;
   if(busy||index+dir<0||index+dir>=spreads.length)return;
   busy=true;
-  prev.disabled=next.disabled=toCover.disabled=true;
+  prev.disabled=next.disabled=true;
   const from=spreads[index],to=spreads[index+dir];
   // Die neue Doppelseite und die beim Umblättern sichtbaren Bilder
   // müssen bereit sein, bevor die Animation beginnt.
@@ -287,7 +288,7 @@ async function go(dir){
   turn.addEventListener('animationend',finish,{once:true});
 }
 prev.addEventListener('click',()=>go(-1));next.addEventListener('click',()=>go(1));
-toCover.addEventListener('click',async()=>{if(lightbox.classList.contains('active')||busy||index===0)return;busy=true;toCover.disabled=true;await prepareView(0);index=0;busy=false;show()});
+toCover.addEventListener('click',async()=>{if(lightbox.classList.contains('active')||busy||index===0)return;busy=true;await prepareView(0);index=0;busy=false;show()});
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(1)}if(e.key==='ArrowLeft'){e.preventDefault();go(-1)}});
 const stage=document.getElementById('stage');stage.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});stage.addEventListener('touchend',e=>{if(touchX===null)return;const d=e.changedTouches[0].clientX-touchX;touchX=null;if(Math.abs(d)>45)go(d<0?1:-1)},{passive:true});
 show();
