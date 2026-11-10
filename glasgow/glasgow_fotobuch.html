@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arthur Burda – Glasgow &amp; Luss</title>
+<link rel="icon" href="/favicon.png?v=3" type="image/png">
+<style>
+:root{color-scheme:light;--paper:#fff;--ink:#111;--duration:620ms}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+header{text-align:center;padding:45px 18px 20px}h1{font-size:clamp(1.65rem,4vw,2.7rem);font-weight:300;letter-spacing:.01em;margin:0}header p{color:#666;font-weight:300;margin:8px 0 18px;font-size:.95rem}
+.back{display:inline-block;border:1px solid #e5e5e5;border-radius:100px;padding:9px 19px;color:#111;text-decoration:none;font-size:.8rem}.back:hover{background:#111;color:white}
+.stage{min-height:min(75vw,760px);display:flex;justify-content:center;align-items:center;padding:20px 18px 8px;overflow:hidden;perspective:2200px}
+.book{width:min(92vw,1160px,calc((100dvh - 245px)*2));aspect-ratio:2/1;position:relative;transform-style:preserve-3d;filter:drop-shadow(0 7px 9px rgba(0,0,0,.12))}
+.page{position:absolute;top:0;width:50%;height:100%;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.page.left{left:0;box-shadow:inset -5px 0 10px -12px #000}.page.right{right:0;box-shadow:inset 5px 0 10px -12px #000}
+.page img{display:block;max-width:94%;max-height:85%;width:auto;height:auto;object-fit:contain}
+.page .image-frame{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.page .image-frame img{max-width:90%;max-height:82%}
+.page.empty{background:#fff}.page.inside-cover{background:#0a0a0a}.page.cover-front{background:#050505;color:#fff}
+.page.cover-front img{max-width:76%;max-height:56%;margin-bottom:8%}
+.cover-content{display:flex;align-items:center;justify-content:center;flex-direction:column;width:100%;height:100%}.cover-title{font-size:clamp(7px,1.1vw,14px);font-weight:500;position:absolute;top:74%;letter-spacing:.01em}
+.book.closed .page.left{background:transparent;box-shadow:none}.book.closed .page.right{box-shadow:0 2px 12px #0002}
+.gutter{position:absolute;left:50%;top:0;height:100%;width:2px;transform:translateX(-50%);background:linear-gradient(90deg,#00000015,#ffffff55,#00000012);pointer-events:none;z-index:5}.book.closed .gutter{display:none}
+.turn{position:absolute;top:0;left:50%;width:50%;height:100%;transform-origin:left center;transform-style:preserve-3d;z-index:8;pointer-events:none;display:none}
+.turn.reverse{left:0;transform-origin:right center}
+.turn-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;background:white;display:flex;align-items:center;justify-content:center}
+.turn-face.backface{transform:rotateY(180deg)}
+.turn-face::after{content:"";position:absolute;inset:0;box-shadow:inset 12px 0 22px -24px #000;pointer-events:none}
+.turn.play{display:block;animation:flipForward var(--duration) cubic-bezier(.45,.05,.55,.95) forwards}
+.turn.reverse.play{animation:flipBack var(--duration) cubic-bezier(.45,.05,.55,.95) forwards}
+@keyframes flipForward{from{transform:rotateY(0)}to{transform:rotateY(-180deg)}}
+@keyframes flipBack{from{transform:rotateY(0)}to{transform:rotateY(180deg)}}
+.controls{display:flex;justify-content:center;align-items:center;gap:30px;padding:10px 12px 28px}
+.controls button{background:none;border:1px solid #dedede;border-radius:50%;width:43px;height:43px;font-size:26px;font-weight:300;cursor:pointer;color:#222;line-height:1}.controls button:disabled{opacity:.2;cursor:default}
+#status{font-size:.8rem;color:#777;min-width:110px;text-align:center;font-variant-numeric:tabular-nums}
+footer{text-align:center;padding:32px 20px 50px;color:#777;font-size:.76rem}footer p{margin:0 0 20px}.rights{display:block;font-size:.67rem;max-width:670px;margin:16px auto 0;line-height:1.6;color:#999}
+@media(max-width:650px){header{padding-top:28px}.stage{padding:8px 6px;min-height:55vw}.book{width:98vw}.controls{padding-top:15px}.page .image-frame img{max-width:92%;max-height:88%}.cover-title{font-size:7px}}
+@media(prefers-reduced-motion:reduce){:root{--duration:1ms}}
+</style>
+</head>
+<body>
+<header><h1>Arthur Burda</h1><p>Glasgow &amp; Luss</p><a class="back" href="/">Zurück</a></header>
+<main aria-label="Digitales Fotobuch Glasgow und Luss">
+ <div class="stage" id="stage"><div class="book closed" id="book">
+  <div class="page left" id="left"></div><div class="page right" id="right"></div>
+  <div class="gutter"></div>
+  <div class="turn" id="turn"><div class="turn-face" id="turnFront"></div><div class="turn-face backface" id="turnBack"></div></div>
+ </div></div>
+ <div class="controls"><button id="prev" aria-label="Zurückblättern">‹</button><span id="status" aria-live="polite"></span><button id="next" aria-label="Weiterblättern">›</button></div>
+</main>
+<footer><p>Prints ausgewählter Arbeiten auf Anfrage.</p><div>© 2026 Arthur Burda · Alle Rechte vorbehalten.</div><span class="rights">Die Verwendung der Fotografien und Inhalte dieser Website für AI-Training, Machine Learning, automatisierte Datensammlung oder vergleichbare Zwecke ist ohne ausdrückliche Zustimmung nicht gestattet.</span></footer>
+<script>
+// BUCHSEITEN 1–48: null = leere Seite. Die Bildzuordnung ist VORLÄUFIG.
+// Ersetze die Dateinamen anhand der tatsächlichen ifolor-Seitenfolge.
+const pages = [
+  "../scotland/Scotland_01.jpg",
+  "../scotland/ampel_toeggel.jpg",
+  "../scotland/frauen.jpg",
+  "../scotland/Toeggel.jpg",
+  "../scotland/auto.jpg",
+  "../scotland/Scotland_22.jpg",
+  "../scotland/Scotland_27.jpg",
+  "../scotland/Scotland_35.jpg",
+  "../scotland/haltestelle.jpg",
+  "../scotland/Scotland_40.jpg",
+  "../scotland/Scotland_41.jpg",
+  "../scotland/Scotland_43.jpg",
+  null,
+  null,
+  "../scotland/Scotland_45.jpg",
+  "../scotland/Scotland_47.jpg",
+  "../scotland/Scotland_49.jpg",
+  "../scotland/Scotland_53.jpg",
+  "../scotland/Scotland_54.jpg",
+  "../scotland/Scotland_55.jpg",
+  "../scotland/Scotland_38.jpg",
+  "../scotland/Scotland_39.jpg",
+  null,
+  null,
+  "../scotland/Scotland_59.jpg",
+  "../scotland/Scotland_60.jpg",
+  "../scotland/Scotland_62.jpg",
+  "../scotland/Scotland_63.jpg",
+  "../scotland/Scotland_65.jpg",
+  null,
+  "../scotland/Bruecke.jpg",
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null
+];
+const coverPhoto = "../scotland/Scotland_01.jpg";
+// Jede Position ist eine Buchansicht: Cover, Innencover + S.1, S.2+3, ... S.48 + Innencover.
+const spreads = [{left:{type:'none'},right:{type:'cover'}}];
+spreads.push({left:{type:'inside'},right:{type:'page',number:1}});
+for(let n=2;n<=48;n+=2)spreads.push({left:{type:'page',number:n},right:{type:'page',number:n+1<=48?n+1:null}});
+const book=document.getElementById('book'), left=document.getElementById('left'),right=document.getElementById('right');
+const turn=document.getElementById('turn'),front=document.getElementById('turnFront'),back=document.getElementById('turnBack');
+const prev=document.getElementById('prev'),next=document.getElementById('next'),status=document.getElementById('status');
+let index=0,busy=false,touchX=null;
+function renderPage(target,spec,side){
+ target.className='page '+side;
+ target.replaceChildren();
+ if(spec.type==='none'){target.classList.add('empty');return}
+ if(spec.type==='inside'){target.classList.add('inside-cover');return}
+ if(spec.type==='cover'){
+   target.classList.add('cover-front');const c=document.createElement('div');c.className='cover-content';
+   const img=document.createElement('img');img.src=coverPhoto;img.alt='Glasgow – Titelbild';c.append(img);
+   const title=document.createElement('div');title.className='cover-title';title.textContent='Glasgow & Luss';c.append(title);target.append(c);return;
+ }
+ target.classList.add('empty');
+ if(spec.number==null)return;
+ const src=pages[spec.number-1];if(!src)return;
+ const frame=document.createElement('div');frame.className='image-frame';const img=document.createElement('img');img.src=src;img.alt='Fotografie auf Seite '+spec.number;img.loading='eager';img.decoding='async';frame.append(img);target.append(frame);
+}
+function makeFace(el,spec,side){const holder=document.createElement('div');renderPage(holder,spec,side);holder.style.cssText='position:absolute;inset:0;width:100%;height:100%';el.replaceChildren(holder)}
+function show(){const spread=spreads[index];renderPage(left,spread.left,'left');renderPage(right,spread.right,'right');book.classList.toggle('closed',index===0);prev.disabled=busy||index===0;next.disabled=busy||index===spreads.length-1;status.textContent=index===0?'Cover':index===1?'Seite 1':index===spreads.length-1?'Seite 48':'Seiten '+spread.left.number+'–'+spread.right.number}
+function go(dir){if(busy||index+dir<0||index+dir>=spreads.length)return;
+ busy=true;const from=spreads[index],to=spreads[index+dir];
+ // Die sich drehende Seite zeigt vorn die aktuelle und hinten die folgende Seite.
+ turn.className='turn'+(dir<0?' reverse':'');
+ if(dir>0){makeFace(front,from.right,'right');makeFace(back,to.left,'left');renderPage(right,to.right,'right')}
+ else{makeFace(front,from.left,'left');makeFace(back,to.right,'right');renderPage(left,to.left,'left')}
+ prev.disabled=next.disabled=true;
+ void turn.offsetWidth;turn.classList.add('play');
+ const finish=()=>{turn.className='turn';index+=dir;busy=false;show()};
+ turn.addEventListener('animationend',finish,{once:true});
+}
+prev.addEventListener('click',()=>go(-1));next.addEventListener('click',()=>go(1));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();go(1)}if(e.key==='ArrowLeft'){e.preventDefault();go(-1)}});
+const stage=document.getElementById('stage');stage.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});stage.addEventListener('touchend',e=>{if(touchX===null)return;const d=e.changedTouches[0].clientX-touchX;touchX=null;if(Math.abs(d)>45)go(d<0?1:-1)},{passive:true});
+show();
+</script></body></html>
