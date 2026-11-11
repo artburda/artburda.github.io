@@ -63,42 +63,6 @@ footer{text-align:center;margin-top:clamp(160px,24vh,300px);padding:32px 20px 50
 #bookViewer:fullscreen .book,#bookViewer:-webkit-full-screen .book{width:min(96vw,calc((100dvh - 110px)*2));max-width:none}
 #bookViewer:fullscreen .controls,#bookViewer:-webkit-full-screen .controls{flex:0 0 auto;padding:8px 0 0}
 @media(max-width:650px){.controls #fullscreenToggle{left:calc(100% + 105px);padding:0 10px;font-size:.72rem}#bookViewer:fullscreen .book,#bookViewer:-webkit-full-screen .book{width:min(98vw,calc((100dvh - 100px)*2))}}
-
-/* Mobile: Buch und Bedienelemente innerhalb der Viewportbreite halten. */
-@media (max-width:650px){
-  html,body{max-width:100%;overflow-x:clip}
-  .stage{padding:8px 4px 0}
-  .book{width:min(98vw,calc((100dvh - 190px)*2))}
-  .controls{
-    display:grid;
-    grid-template-columns:34px minmax(76px,1fr) 34px;
-    column-gap:12px;
-    width:min(100% - 16px,320px);
-    max-width:calc(100vw - 16px);
-    margin:0 auto;
-    padding:12px 0 0;
-    row-gap:10px;
-  }
-  .controls button{width:34px;height:34px;font-size:19px}
-  #status{min-width:0;font-size:.73rem;white-space:nowrap}
-  .controls #toCover,.controls #fullscreenToggle{
-    position:static;
-    left:auto;top:auto;
-    width:auto;height:32px;
-    padding:0 12px;
-    font-size:.72rem;
-    justify-self:center;
-  }
-  .controls #toCover{grid-column:1 / 3;grid-row:2;justify-self:end}
-  .controls #fullscreenToggle{grid-column:3;grid-row:2;justify-self:start}
-  /* Die zweite Reihe darf den zentrierten Navigationskern nicht verbreitern. */
-  .controls #toCover{margin-right:8px}
-  footer{margin-top:clamp(52px,10vh,100px);padding:20px 18px 36px}
-  #bookViewer:fullscreen,#bookViewer:-webkit-full-screen{padding:8px 4px;gap:5px}
-  #bookViewer:fullscreen .stage,#bookViewer:-webkit-full-screen .stage{padding:0 4px;width:100%}
-  #bookViewer:fullscreen .book,#bookViewer:-webkit-full-screen .book{width:min(98vw,calc((100dvh - 125px)*2))}
-  #bookViewer:fullscreen .controls,#bookViewer:-webkit-full-screen .controls{padding:6px 0 0}
-}
 </style>
 </head>
 <body>
@@ -138,7 +102,7 @@ const pages = [
   "../scotland/Scotland_14.jpg", // 08
   "../scotland/frauen.jpg", // 09
   "../scotland/Scotland_21.jpg", // 10
-  "../scotland/Toeggel.jpg", // 11
+  "../scotland/Scotland_17.jpg", // 11
   "../scotland/Scotland_19.jpg", // 12
   null, // 13
   null, // 14
@@ -184,7 +148,7 @@ const pages = [
 // die beiden bisherigen Einzelbilder sichtbar (keine falsche Zuordnung).
 const spreadImages = {
   28: {
-    src: Scotland_41.jpg, // Beispiel: "../scotland/Mein_See_Foto.jpg"
+    src: null, // Beispiel: "../scotland/Mein_See_Foto.jpg"
     x: 25,     // linker Bildrand in % der gesamten Doppelseite
     width: 75, // Bildbreite in % der gesamten Doppelseite
     y: 50,     // vertikale Bildmitte in %
