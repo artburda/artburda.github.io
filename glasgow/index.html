@@ -80,10 +80,40 @@ footer{text-align:center;margin-top:clamp(160px,24vh,300px);padding:32px 20px 50
   #bookViewer:fullscreen .book,#bookViewer:-webkit-full-screen .book{width:min(98vw,calc((100dvh - 120px)*2))}
   #bookViewer:fullscreen .controls,#bookViewer:-webkit-full-screen .controls{padding:8px 0 0}
 }
+
+/* Mobile choice and gallery: desktop book remains unchanged. */
+.mobile-choice,.mobile-gallery,.mobile-modebar{display:none}
+@media(max-width:700px){
+  body.mobile-unselected #bookViewer,body.mobile-unselected footer{display:none}
+  .mobile-choice{display:block;max-width:410px;margin:38px auto 0;padding:0 22px;text-align:center}
+  .mobile-choice h2{font-size:1.15rem;font-weight:400;margin:0 0 9px}
+  .mobile-choice p{font-size:.85rem;line-height:1.55;color:#777;margin:0 0 24px}
+  .choice-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .choice-buttons button{font:inherit;font-size:.87rem;background:white;border:1px solid #ddd;border-radius:10px;padding:20px 9px;cursor:pointer;color:#222}
+  .choice-buttons button span{display:block;color:#888;font-size:.72rem;margin-top:8px;line-height:1.4}
+  .mobile-modebar{display:flex;justify-content:center;gap:12px;padding:16px 12px 0}
+  .mobile-modebar button{font:inherit;font-size:.76rem;color:#666;background:none;border:1px solid #e2e2e2;border-radius:30px;padding:8px 14px;cursor:pointer}
+  .mobile-modebar button[aria-pressed=true]{border-color:#777;color:#111}
+  body.mobile-unselected .mobile-modebar{display:none}
+  body.mobile-gallery-mode #bookViewer{display:none}
+  body.mobile-gallery-mode .mobile-gallery{display:block}
+  .mobile-gallery{padding:18px 16px 30px}
+  .mobile-gallery-grid{columns:2;column-gap:9px}
+  .mobile-gallery-grid img{display:block;width:100%;height:auto;break-inside:avoid;margin:0 0 9px;cursor:zoom-in}
+  .mobile-rotate{display:none;color:#777;font-size:.78rem;text-align:center;margin:8px 12px 0}
+  body.mobile-book-mode .mobile-rotate{display:block}
+  body.mobile-gallery-mode footer,body.mobile-book-mode footer{display:block}
+}
+@media(max-width:700px) and (orientation:landscape){.mobile-rotate{display:none!important}}
+@media(min-width:701px){.mobile-choice,.mobile-gallery,.mobile-modebar,.mobile-rotate{display:none!important}}
 </style>
 </head>
 <body>
 <header><h1>Arthur Burda</h1><p>Glasgow &amp; Luss</p><a class="back" href="/">Zurück</a></header>
+<section class="mobile-choice" id="mobileChoice" aria-label="Ansicht wählen"><h2>Glasgow &amp; Luss</h2><p>Wie möchtest du die Fotografien ansehen?</p><div class="choice-buttons"><button type="button" id="chooseGallery">Galerie<span>Alle Bilder in einer Übersicht</span></button><button type="button" id="chooseBook">Fotobuch<span>Seiten umblättern – am besten im Querformat</span></button></div></section>
+<nav class="mobile-modebar" id="mobileModebar" aria-label="Ansicht wechseln"><button type="button" id="switchGallery" aria-pressed="false">Galerie</button><button type="button" id="switchBook" aria-pressed="false">Fotobuch</button></nav>
+<p class="mobile-rotate" id="mobileRotate">Für die Buchansicht das Smartphone bitte waagrecht halten.</p>
+<section class="mobile-gallery" id="mobileGallery" aria-label="Fotogalerie Glasgow und Luss"><div class="mobile-gallery-grid" id="mobileGalleryGrid"></div></section>
 <main id="bookViewer" aria-label="Digitales Fotobuch Glasgow und Luss">
  <div class="stage" id="stage"><div class="book closed" id="book">
   <div class="page left" id="left"></div><div class="page right" id="right"></div>
@@ -341,6 +371,40 @@ fullscreenToggle.addEventListener('click',async()=>{
 document.addEventListener('fullscreenchange',syncFullscreenButton);
 document.addEventListener('webkitfullscreenchange',syncFullscreenButton);
 if(!bookViewer.requestFullscreen&&!bookViewer.webkitRequestFullscreen){fullscreenToggle.hidden=true}
+
+
+// Smartphone selection; the existing book renderer is not modified.
+const mobileGalleryGrid=document.getElementById('mobileGalleryGrid');
+function buildMobileGallery(){
+  const sources=[];
+  for(let n=1;n<=48;n++){
+    const spread=spreadForPage(n);
+    if(spread){if(n===spread.first)sources.push({src:spread.config.src,label:'Doppelseite '+n+'–'+(n+1)});continue;}
+    const entry=pages[n-1];
+    const src=typeof entry==='string'?entry:entry?.src;
+    if(src)sources.push({src,label:'Fotografie Seite '+n});
+  }
+  const fragment=document.createDocumentFragment();
+  for(const item of sources){
+    const img=document.createElement('img');
+    img.src=item.src;img.alt=item.label;img.loading='lazy';img.decoding='async';
+    img.addEventListener('click',()=>openLightbox(item.src,item.label));
+    fragment.append(img);
+  }
+  mobileGalleryGrid.replaceChildren(fragment);
+}
+function selectMobileMode(mode){
+  document.body.classList.remove('mobile-unselected','mobile-gallery-mode','mobile-book-mode');
+  document.body.classList.add(mode==='gallery'?'mobile-gallery-mode':'mobile-book-mode');
+  document.getElementById('switchGallery').setAttribute('aria-pressed',String(mode==='gallery'));
+  document.getElementById('switchBook').setAttribute('aria-pressed',String(mode==='book'));
+  if(mode==='gallery'&&!mobileGalleryGrid.children.length)buildMobileGallery();
+  window.scrollTo(0,0);
+}
+for(const [id,mode] of [['chooseGallery','gallery'],['chooseBook','book'],['switchGallery','gallery'],['switchBook','book']]){
+  document.getElementById(id).addEventListener('click',()=>selectMobileMode(mode));
+}
+if(window.matchMedia('(max-width:700px)').matches)document.body.classList.add('mobile-unselected');
 
 show();
 </script></body></html>
