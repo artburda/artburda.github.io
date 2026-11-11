@@ -63,6 +63,23 @@ footer{text-align:center;margin-top:clamp(160px,24vh,300px);padding:32px 20px 50
 #bookViewer:fullscreen .book,#bookViewer:-webkit-full-screen .book{width:min(96vw,calc((100dvh - 110px)*2));max-width:none}
 #bookViewer:fullscreen .controls,#bookViewer:-webkit-full-screen .controls{flex:0 0 auto;padding:8px 0 0}
 @media(max-width:650px){.controls #fullscreenToggle{left:calc(100% + 105px);padding:0 10px;font-size:.72rem}#bookViewer:fullscreen .book,#bookViewer:-webkit-full-screen .book{width:min(98vw,calc((100dvh - 100px)*2))}}
+
+/* Mobile: compact controls, no horizontal overflow; desktop remains unchanged. */
+@media (max-width:650px){
+  .stage{padding:8px 4px 0}
+  .book{width:98vw}
+  .controls{display:grid;grid-template-columns:36px minmax(90px,1fr) 36px;column-gap:14px;row-gap:12px;width:min(92vw,310px);max-width:calc(100vw - 24px);margin:0 auto;padding:12px 0 16px}
+  .controls button{width:36px;height:36px;font-size:19px}
+  #status{min-width:0;font-size:.75rem;white-space:nowrap}
+  .controls #toCover,.controls #fullscreenToggle{position:static;left:auto;top:auto;height:32px;width:auto;padding:0 13px;font-size:.72rem;white-space:nowrap}
+  .controls #toCover{grid-column:1 / 3;grid-row:2;justify-self:end;margin-right:7px}
+  .controls #fullscreenToggle{grid-column:3;grid-row:2;justify-self:start;margin-left:7px}
+  footer{margin-top:clamp(52px,9vh,95px);padding:22px 18px 40px}
+  #bookViewer:fullscreen,#bookViewer:-webkit-full-screen{padding:8px 4px;gap:4px}
+  #bookViewer:fullscreen .stage,#bookViewer:-webkit-full-screen .stage{padding:0 4px;width:100%}
+  #bookViewer:fullscreen .book,#bookViewer:-webkit-full-screen .book{width:min(98vw,calc((100dvh - 120px)*2))}
+  #bookViewer:fullscreen .controls,#bookViewer:-webkit-full-screen .controls{padding:8px 0 0}
+}
 </style>
 </head>
 <body>
@@ -148,7 +165,7 @@ const pages = [
 // die beiden bisherigen Einzelbilder sichtbar (keine falsche Zuordnung).
 const spreadImages = {
   28: {
-    src: null, // Beispiel: "../scotland/Mein_See_Foto.jpg"
+    src: "../scotland/Scotland_41.jpg", // Foto über Seiten 28–29
     x: 25,     // linker Bildrand in % der gesamten Doppelseite
     width: 75, // Bildbreite in % der gesamten Doppelseite
     y: 50,     // vertikale Bildmitte in %
